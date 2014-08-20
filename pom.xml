@@ -1,0 +1,89 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>cartier-mud-mapper</artifactId>
+	<name>cartier</name>
+	<version>0.0.1</version>
+
+	<!-- run like this: mvn -DperformRelease=true clean deploy -->
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>http://opensource.org/licenses/Apache-2.0</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<id>ggeorgovassilis</id>
+			<name>George Georgovassilis</name>
+			<email>g.georgovassilis_gmail.com</email>
+			<url>http://georgovassilis.blogspot.com/</url>
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
+	</developers>
+
+
+	<dependencies>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-servlet</artifactId>
+			<version>9.2.2.v20140723</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-webapp</artifactId>
+			<version>9.2.2.v20140723</version>
+		</dependency>
+
+
+	</dependencies>
+
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>2.9.1</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>2.8.1</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>2.3</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<groupId>com.github.ggeorgovassilis</groupId>
+	<packaging>war</packaging>
+	<description>Assistant for playing MUDs</description>
+	<scm>
+		<url>https://github.com/ggeorgovassilis/cartier-mud-mapper.git</url>
+		<developerConnection>George Georgovassilis</developerConnection>
+	</scm>
+	<issueManagement>
+		<url>https://github.com/ggeorgovassilis/cartier-mud-mapper/issues</url>
+	</issueManagement>
+</project>

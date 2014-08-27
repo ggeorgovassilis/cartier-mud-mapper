@@ -1,0 +1,6 @@
+webserver.port=1234
+proxy.port=3000
+remote.address=example.com
+remote.port=1234
+maps.dir=maps
+script.path=scripts/main.js

@@ -3,13 +3,23 @@ package cartier.configuration;
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
+
 public class Configuration extends Properties {
 
+	Logger log = Logger.getLogger(Configuration.class);
+	
 	public void loadConfiguration() {
 		try {
 			try (InputStream is = getClass().getClassLoader()
-					.getResourceAsStream("config.properties")) {
+					.getResourceAsStream("config.properties.default")) {
 				load(is);
+			}
+			try (InputStream is = getClass().getClassLoader()
+					.getResourceAsStream("config.properties")) {
+				if (is!=null)
+					load(is);
+				else log.error("Missing config.properties in resources/web");
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -22,5 +32,17 @@ public class Configuration extends Properties {
 
 	public int getServerPort(){
 		return getInt("webserver.port");
+	}
+	
+	public int getProxyPort(){
+		return getInt("proxy.port");
+	}
+	
+	public String getMudAddress(){
+		return getProperty("remote.address");
+	}
+	
+	public int getMudPort(){
+		return getInt("remote.port");
 	}
 }

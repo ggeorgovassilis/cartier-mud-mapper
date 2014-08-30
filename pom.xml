@@ -4,6 +4,16 @@
 	<artifactId>cartier-mud-mapper</artifactId>
 	<name>cartier</name>
 	<version>0.0.1</version>
+	<groupId>com.github.ggeorgovassilis</groupId>
+	<packaging>jar</packaging>
+	<description>Assistant for playing MUDs</description>
+	<scm>
+		<url>https://github.com/ggeorgovassilis/cartier-mud-mapper.git</url>
+		<developerConnection>George Georgovassilis</developerConnection>
+	</scm>
+	<issueManagement>
+		<url>https://github.com/ggeorgovassilis/cartier-mud-mapper/issues</url>
+	</issueManagement>
 
 	<!-- run like this: mvn -DperformRelease=true clean deploy -->
 	<licenses>
@@ -57,6 +67,20 @@
 		<pluginManagement>
 			<plugins>
 				<plugin>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<configuration>
+						<archive>
+							<manifest>
+								<mainClass>cartier.MudMapper</mainClass>
+							</manifest>
+						</archive>
+						<descriptorRefs>
+							<descriptorRef>jar-with-dependencies</descriptorRef>
+						</descriptorRefs>
+					</configuration>
+					<version>2.4.1</version>
+				</plugin>
+				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
 					<version>2.9.1</version>
@@ -86,14 +110,4 @@
 		</plugins>
 	</build>
 
-	<groupId>com.github.ggeorgovassilis</groupId>
-	<packaging>war</packaging>
-	<description>Assistant for playing MUDs</description>
-	<scm>
-		<url>https://github.com/ggeorgovassilis/cartier-mud-mapper.git</url>
-		<developerConnection>George Georgovassilis</developerConnection>
-	</scm>
-	<issueManagement>
-		<url>https://github.com/ggeorgovassilis/cartier-mud-mapper/issues</url>
-	</issueManagement>
 </project>

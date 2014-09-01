@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cartier.utils.Utils;
+
 public class FileServlet extends HttpServlet{
 
 	@Override
@@ -29,18 +31,9 @@ public class FileServlet extends HttpServlet{
 		if (URI.endsWith(".png"))
 			resp.setContentType("image/png");
 		
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		
 		if (URI.startsWith("/"))
 			URI = URI.substring(1);
-		InputStream is = getClass().getClassLoader().getResourceAsStream(URI);
-		int i = 0;
-		while (-1!=(i = is.read())){
-			baos.write(i);
-		}
-		is.close();
-		byte[] content = baos.toByteArray();
-		baos.close();
+		byte[] content = Utils.getClassPathResource(URI);
 		resp.setContentLength(content.length);
 		ServletOutputStream sos = resp.getOutputStream();
 		sos.write(content);

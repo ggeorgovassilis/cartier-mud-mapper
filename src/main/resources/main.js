@@ -4,6 +4,9 @@ var Client = {
 		},
 		println:function (message){
 			Client.print(message+"\n");
+		},
+		reloadScripts:function(){
+			lib.reloadScripts();
 		}
 }
 

@@ -1,6 +1,7 @@
 package cartier.scripts;
 
 import cartier.events.EventBus;
+import cartier.events.ReloadScriptsEvent;
 import cartier.events.TextToClientEvent;
 import cartier.events.TextToMudEvent;
 
@@ -18,5 +19,9 @@ public class ScriptsLib {
 
 	public void sendTextToMud(Object message){
 		bus.post(new TextToMudEvent(message.toString()));
+	}
+	
+	public void reloadScripts(){
+		bus.post(new ReloadScriptsEvent());
 	}
 }

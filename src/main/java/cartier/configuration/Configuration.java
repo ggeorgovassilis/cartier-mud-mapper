@@ -1,5 +1,6 @@
 package cartier.configuration;
 
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Properties;
 
@@ -15,11 +16,10 @@ public class Configuration extends Properties {
 					.getResourceAsStream("config.properties.default")) {
 				load(is);
 			}
-			try (InputStream is = getClass().getClassLoader()
-					.getResourceAsStream("config.properties")) {
+			try (InputStream is = new FileInputStream("personalization/config.properties")) {
 				if (is!=null)
 					load(is);
-				else log.error("Missing config.properties in resources/web");
+				else log.error("Missing config.properties in personalization");
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);

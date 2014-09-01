@@ -32,6 +32,8 @@ public class Pipe extends Thread implements Listener<Event> {
 	protected EventBus bus;
 	protected boolean waitForEol;
 	protected OutputStream to;
+	
+	protected final static int EOF = -1;
 
 	public Pipe(String name, Socket sFrom, Socket sTo, LineCallback callback,
 			EventBus bus, boolean waitForEol) {
@@ -52,20 +54,17 @@ public class Pipe extends Thread implements Listener<Event> {
 	public void run() {
 		InputStream from = null;
 		to = null;
-		byte[] buffer = new byte[1024];
 		ByteArrayOutputStream lineBuffer = new ByteArrayOutputStream();
 		try {
 			from = sFrom.getInputStream();
 			to = sTo.getOutputStream();
 			while (true) {
-				int l = from.read(buffer);
-				if (l == -1)
+				int value = from.read();
+				if (value == EOF)
 					break;
-				for (int i = 0; i < l; i++) {
-					byte b = buffer[i];
-					if (b == '\r')
+					if (value == (int)'\r')
 						continue;
-					if (b == (byte) '\n') {
+					if (value == (int) '\n') {
 						byte[] bytes = lineBuffer.toByteArray();
 						String line = new String(bytes, "ASCII");
 						lineBuffer.reset();
@@ -80,11 +79,9 @@ public class Pipe extends Thread implements Listener<Event> {
 							}
 						}
 					} else
-						lineBuffer.write(b);
-				}
-				if (!waitForEol) {
-					to.write(buffer, 0, l);
-				}
+						lineBuffer.write(value);
+				if (!waitForEol)
+					to.write(value);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -93,6 +90,7 @@ public class Pipe extends Thread implements Listener<Event> {
 			bus.post(new DisconnectEvent());
 			Utils.close(from);
 			Utils.close(to);
+			bus.unregister(this);
 		}
 	}
 

@@ -23,6 +23,8 @@ public class WebServer extends Thread {
 			server = new Server(port);
 			handler = new ServletHandler();
 			server.setHandler(handler);
+			ServletHolder jsonServlet = handler.addServletWithMapping(JsonServlet.class.getName(), "/json/*");
+			ServletHolder homeServlet = handler.addServletWithMapping(HomeServlet.class.getName(), "/");
 			ServletHolder fileServlet = handler.addServletWithMapping(FileServlet.class.getName(), "/web/*");
 			server.start();
 			server.join();

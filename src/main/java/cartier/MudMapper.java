@@ -5,6 +5,7 @@ import cartier.configuration.Configuration;
 import cartier.events.EventBus;
 import cartier.events.Listener;
 import cartier.events.MudInputEvent;
+import cartier.events.ReloadScriptsEvent;
 import cartier.events.UserInputEvent;
 import cartier.proxy.Proxy;
 import cartier.scripts.ScriptExecutor;
@@ -25,7 +26,8 @@ public class MudMapper {
 
 			ScriptExecutor scriptExecutor = new ScriptExecutor(
 					config.getProperty("script.path"));
-			eventBus.register(UserInputEvent.class, scriptExecutor);
+			eventBus.register(UserInputEvent.class, (Listener)scriptExecutor);
+			eventBus.register(ReloadScriptsEvent.class, (Listener)scriptExecutor);
 			AppContext.set("scripts", scriptExecutor);
 
 			WebServer server = new WebServer(config.getServerPort(),

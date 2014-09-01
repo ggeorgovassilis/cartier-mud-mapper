@@ -6,8 +6,12 @@ A mapper and intelligent assistant for playing MUDs. There's nothing to see here
 ## Using
 
 ### Configuration
-Copy ```config.properties.default``` to ```config.properties``` at the same location and edit the self-explaining values.
 
+1. Make sure there is a ```personalization``` directory.
+2. Copy ```config.properties.default``` to ```personalization/config.properties``` 
+3. You can add you own scripts to ```personalization/scripts```
+4. Store any maps you might have in ```personalization/maps```
+ 
 ### Running
  
 After starting cartier you can connect with your favourite client to localhost:3000. This will forward a connection to the MUD.
@@ -22,4 +26,6 @@ doesn't send a trailing newline (Return key).
 
 ```cartier:Client.println("hello word")``` will send text to the client as if it came directly from the MUD. There's also a ```print``` version that doesn't send a trailing newline (Return key).
 
-Modifying main.js will load the new file as soon as a command is executed.
+More commands:
+
+```javascript Client.reloadScripts()``` will reload all scripts.

@@ -1,9 +1,10 @@
 package cartier.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Map {
+public class Map implements Serializable{
 
 	protected List<Tile> tiles = new ArrayList<Tile>();
 

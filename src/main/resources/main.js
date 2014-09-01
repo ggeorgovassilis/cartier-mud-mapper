@@ -18,3 +18,16 @@ var Mud = {
 		Mud.print(message+"\n");
 	}
 }
+
+var Maps = {
+		list: function(){
+			Client.println("User maps:");
+			var mapNames = lib.getMapNames();
+			for (var i=0;i<mapNames.length;i++)
+				Client.println(mapNames[i]);
+		},
+		load: function(fileName){
+			Client.println("Loading map "+fileName);
+			lib.loadMap(fileName);
+		}
+}

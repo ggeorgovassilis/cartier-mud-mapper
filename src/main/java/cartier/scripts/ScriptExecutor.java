@@ -22,16 +22,29 @@ import cartier.utils.Utils;
 
 public class ScriptExecutor implements Listener<Event> {
 
-	public final static String prefix = "cartier:";
+	public final static String prefix = "c:";
 	protected ScriptEngine scriptEngine;
 	protected String scriptLocation;
 	protected Logger log = Logger.getLogger(ScriptExecutor.class);
 	protected Bindings bindings;
 
+	public String[] getScriptNames(){
+		String[] files = new File("personalization/scripts")
+		.list(new FilenameFilter() {
+
+			@Override
+			public boolean accept(File dir, String name) {
+				return name.endsWith(".js");
+			}
+		});
+		Arrays.sort(files);
+		return files;
+	}
+	
 	protected void readAndLoad(String[] files) throws Exception {
 		bindings = scriptEngine.createBindings();
-		EventBus bus = AppContext.get("eventbus");
-		ScriptsLib lib = new ScriptsLib(bus);
+		EventBus bus = AppContext.eventBus;
+		ScriptsLib lib = new ScriptsLib(bus, this, AppContext.mapsManager);
 		bindings.put("lib", lib);
 		log.info("Loading main.js");
 		String mainScript = new String(Utils.getClassPathResource("main.js"));
@@ -39,7 +52,7 @@ public class ScriptExecutor implements Listener<Event> {
 		for (String fileName : files) {
 			log.info("Loading " + fileName);
 			log.info("Reloading " + fileName);
-			FileReader reader = new FileReader(fileName);
+			FileReader reader = new FileReader("personalization/scripts/"+fileName);
 			scriptEngine.eval(reader, bindings);
 			reader.close();
 		}
@@ -47,16 +60,7 @@ public class ScriptExecutor implements Listener<Event> {
 
 	protected void loadScripts() throws Exception {
 		log.info("Reloading scripts");
-		String[] files = new File("personalization/scripts")
-				.list(new FilenameFilter() {
-
-					@Override
-					public boolean accept(File dir, String name) {
-						return name.endsWith(".js");
-					}
-				});
-		Arrays.sort(files);
-		readAndLoad(files);
+		readAndLoad(getScriptNames());
 	}
 
 	public ScriptExecutor(String scriptLocation) throws Exception {

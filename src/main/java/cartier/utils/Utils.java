@@ -3,6 +3,8 @@ package cartier.utils;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -14,7 +16,7 @@ import cartier.events.Event;
 public class Utils {
 
 	static Logger log = Logger.getLogger(Utils.class);
-	
+
 	public static void close(Closeable c) {
 		try {
 			c.close();
@@ -26,6 +28,18 @@ public class Utils {
 		try {
 			t.join();
 		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public static byte[] loadFile(File f) {
+		try {
+			byte[] content = new byte[(int) f.length()];
+			FileInputStream fis = new FileInputStream(f);
+			fis.read(content);
+			fis.close();
+			return content;
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -59,7 +73,7 @@ public class Utils {
 			baos.close();
 			return content;
 		} catch (Exception e) {
-			log.error(e.getMessage()+" when accessing "+cp);
+			log.error(e.getMessage() + " when accessing " + cp);
 			throw new RuntimeException(e);
 		}
 	}

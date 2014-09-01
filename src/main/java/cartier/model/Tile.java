@@ -1,9 +1,10 @@
 package cartier.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Tile {
+public class Tile implements Serializable{
 
 	protected List<Exit> exits = new ArrayList<Exit>();
 	protected List<String> tags = new ArrayList<String>();

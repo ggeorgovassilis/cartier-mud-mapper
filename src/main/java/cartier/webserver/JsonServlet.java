@@ -6,6 +6,8 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -15,26 +17,44 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
-public class JsonServlet extends HttpServlet {
+import cartier.configuration.AppContext;
+import cartier.events.CommandForBrowserEvent;
+import cartier.events.Listener;
+
+public class JsonServlet extends HttpServlet implements
+		Listener<CommandForBrowserEvent> {
 
 	private ObjectMapper json = new ObjectMapper();
+	private List<CommandForBrowserEvent> commandQueue = new ArrayList<CommandForBrowserEvent>();
 
 	protected void showMapOverview(HttpServletResponse resp)
 			throws ServletException, IOException {
-		String[] maps = new File("personalization/maps").list(new FilenameFilter() {
-			
-			@Override
-			public boolean accept(File dir, String name) {
-				return name.endsWith(".js");
-			}
-		});
+		String[] maps = new File("personalization/maps")
+				.list(new FilenameFilter() {
+
+					@Override
+					public boolean accept(File dir, String name) {
+						return name.endsWith(".js");
+					}
+				});
 		PrintWriter pw = resp.getWriter();
 		json.writeValue(pw, maps);
 		pw.flush();
 	}
-	
-	protected void showMap(HttpServletResponse resp, String map) throws IOException{
-		
+
+	protected void showCommandQueue(HttpServletResponse resp)
+			throws ServletException, IOException {
+		resp.setContentType("application/json");
+		resp.setCharacterEncoding("utf-8");
+		ServletOutputStream sos = resp.getOutputStream();
+		CommandForBrowserEvent cmd = null;
+		synchronized (commandQueue) {
+			if (!commandQueue.isEmpty()) {
+				cmd = commandQueue.remove(0);
+				json.writeValue(sos, cmd);
+			}
+		}
+		sos.flush();
 	}
 
 	@Override
@@ -42,9 +62,26 @@ public class JsonServlet extends HttpServlet {
 			throws ServletException, IOException {
 		resp.setContentType("application/json");
 		String url = req.getRequestURI();
-		if ("/json/maps/".equals(url))
-			showMapOverview(resp); else
-		if (url.startsWith("/json/maps/"))
-			showMap(resp, url.substring(12));
+		if ("/json/queue".equals(url))
+			showCommandQueue(resp);
+	}
+
+	@Override
+	public void init() throws ServletException {
+		super.init();
+		AppContext.eventBus.register(CommandForBrowserEvent.class, this);
+	}
+
+	@Override
+	public void destroy() {
+		super.destroy();
+		AppContext.eventBus.unregister(this);
+	}
+
+	@Override
+	public void process(CommandForBrowserEvent event) {
+		synchronized (commandQueue) {
+			commandQueue.add(event);
+		}
 	}
 }

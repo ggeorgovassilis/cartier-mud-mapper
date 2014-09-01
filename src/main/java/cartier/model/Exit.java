@@ -1,6 +1,8 @@
 package cartier.model;
 
-public class Exit {
+import java.io.Serializable;
+
+public class Exit implements Serializable{
 
 	public enum Direction {
 		north, east, south, west, down, up;

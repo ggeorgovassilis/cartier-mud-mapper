@@ -37,4 +37,16 @@ public class ScriptsLib {
 	public void loadMap(String fileName){
 		mapsManager.loadMap(fileName);
 	}
+	
+	public void mapZoomIn(){
+		mapsManager.zoomIn();
+	}
+
+	public void mapZoomOut(){
+		mapsManager.zoomOut();
+	}
+
+	public void mapZoomReset(){
+		mapsManager.zoomReset();
+	}
 }

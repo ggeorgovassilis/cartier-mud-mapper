@@ -2,12 +2,20 @@ package cartier.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Tile implements Serializable{
 
 	protected List<Exit> exits = new ArrayList<Exit>();
 	protected List<String> tags = new ArrayList<String>();
+	protected Set<Exit.Direction> arrows = new HashSet();
+	protected String title;
+	protected String text;
+	protected int row;
+	protected int column;
+	protected int level;
 
 	public List<Exit> getExits() {
 		return exits;
@@ -25,11 +33,11 @@ public class Tile implements Serializable{
 		this.tags = tags;
 	}
 
-	public int getArrows() {
+	public Set<Exit.Direction> getArrows() {
 		return arrows;
 	}
 
-	public void setArrows(int arrows) {
+	public void setArrows(Set<Exit.Direction> arrows) {
 		this.arrows = arrows;
 	}
 
@@ -73,10 +81,4 @@ public class Tile implements Serializable{
 		this.level = level;
 	}
 
-	protected int arrows;
-	protected String title;
-	protected String text;
-	protected int row;
-	protected int column;
-	protected int level;
 }

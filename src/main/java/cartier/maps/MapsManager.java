@@ -46,4 +46,16 @@ public class MapsManager {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public void zoomIn(){
+		bus.post(new CommandForBrowserEvent("zoomin", null));
+	}
+
+	public void zoomOut(){
+		bus.post(new CommandForBrowserEvent("zoomout", null));
+	}
+
+	public void zoomReset(){
+		bus.post(new CommandForBrowserEvent("zoomreset", null));
+	}
 }

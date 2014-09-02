@@ -29,5 +29,14 @@ var Maps = {
 		load: function(fileName){
 			Client.println("Loading map "+fileName);
 			lib.loadMap(fileName);
+		},
+		zoomIn: function(){
+			lib.mapZoomIn();
+		},
+		zoomOut: function(){
+			lib.mapZoomOut();
+		},
+		zoomReset: function(){
+			lib.mapZoomReset();
 		}
 }

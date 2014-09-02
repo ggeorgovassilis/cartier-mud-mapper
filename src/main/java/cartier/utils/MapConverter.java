@@ -43,7 +43,24 @@ public class MapConverter {
 
 	public static Tile nodeToTile(Element node){
 		Tile tile = new Tile();
-		tile.setArrows(toint(node.attribute("arrows")));
+		int arrows = toint(node.attribute("arrows"));
+		if ((arrows & 1) == 1)
+			tile.getArrows().add(Direction.north_west);
+		if ((arrows & 2) == 2)
+			tile.getArrows().add(Direction.north);
+		if ((arrows & 4) == 4)
+			tile.getArrows().add(Direction.north_east);
+		if ((arrows & 8) == 8)
+			tile.getArrows().add(Direction.east);
+		if ((arrows & 16) == 16)
+			tile.getArrows().add(Direction.south_east);
+		if ((arrows & 32) == 32)
+			tile.getArrows().add(Direction.south);
+		if ((arrows & 64) == 64)
+			tile.getArrows().add(Direction.south_west);
+		if ((arrows & 128) == 128)
+			tile.getArrows().add(Direction.west);
+		
 		tile.setColumn(toint(node.attribute("column")));
 		tile.setRow(toint(node.attribute("row")));
 		tile.setLevel(toint(node.attribute("level")));
@@ -61,7 +78,7 @@ public class MapConverter {
 	}
 
 	public static void main(String... args) throws Exception {
-		args=new String[]{"personalization/laketown.xml","personalization/laketown.js"};
+		args=new String[]{"personalization/maps/sample.xml","personalization/maps/sample.js"};
 		ObjectMapper om = new ObjectMapper();
 		SAXReader reader = new SAXReader();
         Document document = reader.read(new File(args[0]));

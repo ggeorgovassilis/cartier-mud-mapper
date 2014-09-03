@@ -12,6 +12,7 @@ Arrows={
 UI = {
 	map:null,
 	tileSize : 30,
+	level:0,
 	checkCommands : function() {
 		$.ajax({
 			url : '/json/queue'
@@ -104,24 +105,64 @@ UI = {
 			ctx.setLineDash([]);
 		}
 	},
+	updateLevelSelection : function(map){
+		var levels = {};
+		for (var i = 0; i < map.tiles.length; i++) {
+			var tile = map.tiles[i];
+			levels["l"+tile.level]=true;
+		}
+		
+		var larr=new Array();
+		for (var property in levels) {
+		    if (levels.hasOwnProperty(property)) {
+		    	larr.push(property.substring(1));
+		    }
+		}
+		larr.sort();
+		var select = $("#levels");
+		select.empty();
+		for (var i=0;i<larr.length;i++){
+			select.append("<option value="+larr[i]+">Level "+larr[i]+"</option>")
+		}
+		return larr;
+	},
 	showMap : function(map) {
+		var levels = UI.updateLevelSelection(map);
+		UI.level = levels[0];
+		UI.redrawMap(map);
+	},
+	redrawMap : function(map){
 		UI.map = map;
 		var eMap = $("#map");
 		var eContainer = $("#container");
-//		eMap.attr("width", (eContainer.width() -50)+ "px");
-//		eMap.attr("height", (eContainer.height() -50)+ "px");
+		var width = window.innerWidth;
+		var height = window.innerHeight;
+		eContainer.width(width);
+		eContainer.height(height - $("#levels").height()-15);
 		var ctx = eMap.get(0).getContext('2d');
 		ctx.fillStyle = "rgb(0,0,0)";
 		ctx.clearRect(0,0,eMap.width(),eMap.height());
-		for (var x=0;x<1000;x++)
-		for (var y=0;y<1000;y++){
-			ctx.fillRect(x*UI.tileSize, y*UI.tileSize, 1, 1);
-		}
+		var cols = eMap.width()/UI.tileSize;
+		var rows = eMap.height()/UI.tileSize;
+		
+		for (var x=0;x<cols;x++)
+			for (var y=0;y<rows;y++){
+				ctx.fillRect(x*UI.tileSize, y*UI.tileSize, 1, 1);
+			}
 		for (var i = 0; i < map.tiles.length; i++) {
 			var tile = map.tiles[i];
-			UI._drawTile(tile, ctx);
+			if (tile.level == UI.level)
+				UI._drawTile(tile, ctx);
 		}
+		
+	},
+	onLevelSelectionChanged : function(){
+		var level = $('#levels').find(":selected").attr("value");
+		UI.level = level;
+		UI.redrawMap(UI.map);
 	}
 }
 
 window.setInterval(UI.checkCommands, 1000);
+
+$("#levels").change(UI.onLevelSelectionChanged);

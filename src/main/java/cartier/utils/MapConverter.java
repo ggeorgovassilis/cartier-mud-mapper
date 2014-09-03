@@ -78,7 +78,7 @@ public class MapConverter {
 	}
 
 	public static void main(String... args) throws Exception {
-		args=new String[]{"personalization/maps/sample.xml","personalization/maps/sample.js"};
+		//args=new String[]{"personalization/maps/sample.xml","personalization/maps/sample.js"};
 		ObjectMapper om = new ObjectMapper();
 		SAXReader reader = new SAXReader();
         Document document = reader.read(new File(args[0]));

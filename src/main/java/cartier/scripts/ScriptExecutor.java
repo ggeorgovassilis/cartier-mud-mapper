@@ -17,6 +17,7 @@ import cartier.events.Event;
 import cartier.events.EventBus;
 import cartier.events.Listener;
 import cartier.events.ReloadScriptsEvent;
+import cartier.events.TextToClientEvent;
 import cartier.events.UserInputEvent;
 import cartier.utils.Utils;
 
@@ -74,6 +75,7 @@ public class ScriptExecutor implements Listener<Event> {
 		try {
 			scriptEngine.eval(javascript, bindings);
 		} catch (Exception e) {
+			AppContext.eventBus.post(new TextToClientEvent("* ERROR *, see logs "+e.getMessage()));
 			throw new RuntimeException(e);
 		}
 	}

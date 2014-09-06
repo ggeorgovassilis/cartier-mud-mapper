@@ -45,4 +45,13 @@ public class Configuration extends Properties {
 	public int getMudPort(){
 		return getInt("remote.port");
 	}
+	
+	public boolean isFakeMudActive(){
+		String s = getProperty("fakemud.active");
+		return "true".equals(s);
+	}
+	
+	public int getFakeMudPort(){
+		return getInt("fakemud.port");
+	}
 }

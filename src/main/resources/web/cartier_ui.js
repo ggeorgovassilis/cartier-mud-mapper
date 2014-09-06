@@ -9,14 +9,19 @@ Arrows={
 	"west"		:{dx:-1, dy: 0, dz: 0}	
 };
 
+mapBackgroundColour="rgb(150,150,150)";
+mapTileBackgroundColour_default="rgb(255,255,255)";
+mapTileSize=30;
+
 UI = {
 	map:null,
-	tileSize : 30,
 	level:0,
 	checkCommands : function() {
 		$.ajax({
 			url : '/json/queue'
 		}).done(function(command) {
+			console.log(command);
+			checkForCommands();
 			if (!command)
 				return;
 			if (command.name == "loadmap")
@@ -27,21 +32,23 @@ UI = {
 				UI.zoomMapOut();
 			if (command.name == "zoomreset")
 				UI.zoomMapReset();
+			if (command.name == "showlevel")
+				UI.showMapLevel(command.payload);
 		});
 	},
 	zoomMapIn:function(){
-		UI.tileSize+=2;
-		UI.showMap(UI.map);
+		mapTileSize+=2;
+		UI.redrawMap(UI.map);
 	},
 	zoomMapOut:function(){
-		if (UI.tileSize>2){
-			UI.tileSize-=2;
-			UI.showMap(UI.map);
+		if (mapTileSize>2){
+			mapTileSize-=2;
+			UI.redrawMap(UI.map);
 		}
 	},
 	zoomMapReset:function(){
-		UI.tileSize=20;
-		UI.showMap(UI.map);
+		mapTileSize=30;
+		UI.redrawMap(UI.map);
 	},
 	drawTile: function(tile){
 		var eMap = $("#map");
@@ -50,9 +57,12 @@ UI = {
 		UI._drawTile(tile, ctx);
 	},
 	_drawTile: function(tile, ctx){
-		var x = tile.column * UI.tileSize;
-		var y = tile.row * UI.tileSize;
-		var m = UI.tileSize/2;
+		var x = tile.column * mapTileSize;
+		var y = tile.row * mapTileSize;
+		var m = mapTileSize/2;
+		ctx.fillStyle = mapTileBackgroundColour_default;
+		ctx.fillRect(x,y,mapTileSize, mapTileSize);
+		ctx.fillStyle = "rgb(0,0,0)";
 		ctx.fillRect(x, y, 1, 1);
 		for (var i = 0; i < tile.exits.length; i++) {
 			var e = tile.exits[i];
@@ -60,15 +70,15 @@ UI = {
 				ctx.fillStyle = "rgb(0,150,0)";
 			var exit = {};
 			if (e.direction == "north")
-				ctx.fillRect(x, y, UI.tileSize, 1);
+				ctx.fillRect(x, y, mapTileSize, 1);
 			else if (e.direction == "east")
-				ctx.fillRect(x + UI.tileSize, y, 1, UI.tileSize);
+				ctx.fillRect(x + mapTileSize, y, 1, mapTileSize);
 			else if (e.direction == "south")
-				ctx.fillRect(x, y + UI.tileSize - 1, UI.tileSize, 1);
+				ctx.fillRect(x, y + mapTileSize - 1, mapTileSize, 1);
 			else if (e.direction == "west")
-				ctx.fillRect(x, y, 1, UI.tileSize);
+				ctx.fillRect(x, y, 1, mapTileSize);
 			if (e.direction == "up") {
-				var m = UI.tileSize/2;
+				var m = mapTileSize/2;
 				ctx.beginPath();
 				ctx.arc(x+m,y+m,m,0,Math.PI*2,false);
 				ctx.moveTo(x+m-3,y+m);
@@ -77,7 +87,7 @@ UI = {
 				ctx.lineTo(x+m,y+m+3);
 				ctx.stroke();
 			} else if (e.direction == "down") {
-				var m = UI.tileSize/2;
+				var m = mapTileSize/2;
 				ctx.beginPath();
 				ctx.arc(x+m,y+m,m,0,Math.PI*2,false);
 				ctx.moveTo(x+m-3,y+m-3);
@@ -105,49 +115,29 @@ UI = {
 			ctx.setLineDash([]);
 		}
 	},
-	updateLevelSelection : function(map){
-		var levels = {};
-		for (var i = 0; i < map.tiles.length; i++) {
-			var tile = map.tiles[i];
-			levels["l"+tile.level]=true;
-		}
-		
-		var larr=new Array();
-		for (var property in levels) {
-		    if (levels.hasOwnProperty(property)) {
-		    	larr.push(property.substring(1));
-		    }
-		}
-		larr.sort();
-		var select = $("#levels");
-		select.empty();
-		for (var i=0;i<larr.length;i++){
-			select.append("<option value="+larr[i]+">Level "+larr[i]+"</option>")
-		}
-		return larr;
-	},
 	showMap : function(map) {
-		var levels = UI.updateLevelSelection(map);
-		UI.level = levels[0];
-		UI.redrawMap(map);
+		UI.map = map;
+		UI.level = 0;
+		UI.showMapLevel(UI.level);
 	},
 	redrawMap : function(map){
 		UI.map = map;
 		var eMap = $("#map");
 		var eContainer = $("#container");
-		var width = window.innerWidth;
-		var height = window.innerHeight;
+		var width = window.innerWidth-20;
+		var height = window.innerHeight-20;
 		eContainer.width(width);
 		eContainer.height(height - $("#levels").height()-15);
 		var ctx = eMap.get(0).getContext('2d');
+		ctx.fillStyle = mapBackgroundColour;
+		ctx.fillRect(0,0,eMap.width(),eMap.height());
 		ctx.fillStyle = "rgb(0,0,0)";
-		ctx.clearRect(0,0,eMap.width(),eMap.height());
-		var cols = eMap.width()/UI.tileSize;
-		var rows = eMap.height()/UI.tileSize;
+		var cols = eMap.width()/mapTileSize;
+		var rows = eMap.height()/mapTileSize;
 		
 		for (var x=0;x<cols;x++)
 			for (var y=0;y<rows;y++){
-				ctx.fillRect(x*UI.tileSize, y*UI.tileSize, 1, 1);
+				ctx.fillRect(x*mapTileSize, y*mapTileSize, 1, 1);
 			}
 		for (var i = 0; i < map.tiles.length; i++) {
 			var tile = map.tiles[i];
@@ -156,13 +146,20 @@ UI = {
 		}
 		
 	},
-	onLevelSelectionChanged : function(){
-		var level = $('#levels').find(":selected").attr("value");
+	showMapLevel: function(level){
 		UI.level = level;
 		UI.redrawMap(UI.map);
+		$("#level").html("Level "+level);
 	}
 }
 
-window.setInterval(UI.checkCommands, 1000);
+function checkForCommands(){
+	window.setTimeout(UI.checkCommands, 100);
+}
 
-$("#levels").change(UI.onLevelSelectionChanged);
+checkForCommands();
+
+$(window).resize(function(){
+	UI.redrawMap(UI.map);
+});
+

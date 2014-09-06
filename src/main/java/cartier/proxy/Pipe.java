@@ -20,7 +20,7 @@ import cartier.utils.Utils;
 
 public class Pipe extends Thread implements Listener<Event> {
 
-	interface LineCallback {
+	public interface LineCallback {
 		void onLineWritten(String line);
 	}
 

@@ -9,6 +9,7 @@ import cartier.events.Listener;
 import cartier.events.MudInputEvent;
 import cartier.events.ReloadScriptsEvent;
 import cartier.events.UserInputEvent;
+import cartier.fakemud.FakeMUD;
 import cartier.maps.MapsManager;
 import cartier.proxy.Proxy;
 import cartier.scripts.ScriptExecutor;
@@ -23,17 +24,19 @@ public class MudMapper {
 
 			EventBus eventBus = new EventBus();
 			eventBus.start();
-			
-			MapsManager maps = new MapsManager(new File("personalization/maps"), eventBus);
-			
+
+			MapsManager maps = new MapsManager(
+					new File("personalization/maps"), eventBus);
+
 			AppContext.configuration = config;
 			AppContext.mapsManager = maps;
 			AppContext.eventBus = eventBus;
 
 			ScriptExecutor scriptExecutor = new ScriptExecutor(
 					config.getProperty("script.path"));
-			eventBus.register(UserInputEvent.class, (Listener)scriptExecutor);
-			eventBus.register(ReloadScriptsEvent.class, (Listener)scriptExecutor);
+			eventBus.register(UserInputEvent.class, (Listener) scriptExecutor);
+			eventBus.register(ReloadScriptsEvent.class,
+					(Listener) scriptExecutor);
 			AppContext.scriptExecutor = scriptExecutor;
 
 			WebServer server = new WebServer(config.getServerPort(),
@@ -49,6 +52,11 @@ public class MudMapper {
 							System.out.println(">>>" + event.getLine());
 						}
 					});
+			
+			if (config.isFakeMudActive()){
+				FakeMUD fakeMUD = new FakeMUD(config.getFakeMudPort(), eventBus);
+				fakeMUD.start();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(1);

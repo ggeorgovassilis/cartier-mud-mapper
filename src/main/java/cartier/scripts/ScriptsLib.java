@@ -49,4 +49,8 @@ public class ScriptsLib {
 	public void mapZoomReset(){
 		mapsManager.zoomReset();
 	}
+	
+	public void mapShowLevel(int level){
+		mapsManager.showLevel(level);
+	}
 }

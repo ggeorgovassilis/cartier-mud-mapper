@@ -58,4 +58,8 @@ public class MapsManager {
 	public void zoomReset(){
 		bus.post(new CommandForBrowserEvent("zoomreset", null));
 	}
+	
+	public void showLevel(int level){
+		bus.post(new CommandForBrowserEvent("showlevel", level));
+	}
 }

@@ -4,3 +4,5 @@ remote.address=example.com
 remote.port=1234
 maps.dir=maps
 script.path=scripts/main.js
+fakemud.active=false
+fakemud.port=4000

@@ -29,3 +29,15 @@ doesn't send a trailing newline (Return key).
 More commands:
 
 ```javascript Client.reloadScripts()``` will reload all scripts.
+
+```javascript Maps.list()``` will show a list of available maps.
+
+```javascript Maps.load('map_name.js')``` will load and show in the browser the map specified by 'map_name.js'.
+
+```javascript Maps.zoomIn()``` will zoom in the map.
+
+```javascript Maps.zoomOut()``` will zoom out the map.
+
+```javascript Maps.zoomReset()``` will reset the map zoom.
+
+```javascript Maps.showLevel(level)``` will show a map level.

@@ -8,6 +8,9 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -23,9 +26,12 @@ import cartier.events.Listener;
 
 public class JsonServlet extends HttpServlet implements
 		Listener<CommandForBrowserEvent> {
+	
+	final int TIMEOUT_SECONDS = 20;
 
 	private ObjectMapper json = new ObjectMapper();
-	private List<CommandForBrowserEvent> commandQueue = new ArrayList<CommandForBrowserEvent>();
+	private BlockingQueue<CommandForBrowserEvent> commandQueue = new ArrayBlockingQueue<>(
+			100);
 
 	protected void showMapOverview(HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -47,13 +53,16 @@ public class JsonServlet extends HttpServlet implements
 		resp.setContentType("application/json");
 		resp.setCharacterEncoding("utf-8");
 		ServletOutputStream sos = resp.getOutputStream();
-		CommandForBrowserEvent cmd = null;
-		synchronized (commandQueue) {
-			if (!commandQueue.isEmpty()) {
-				cmd = commandQueue.remove(0);
-				json.writeValue(sos, cmd);
-			}
+		CommandForBrowserEvent NOP = new CommandForBrowserEvent("nop",null);
+		CommandForBrowserEvent cmd = NOP;
+		try {
+			cmd = commandQueue
+					.poll(TIMEOUT_SECONDS, TimeUnit.SECONDS);
+			if (cmd == null)
+				cmd = NOP;
+		} catch (InterruptedException e) {
 		}
+		json.writeValue(sos, cmd);
 		sos.flush();
 	}
 

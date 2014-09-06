@@ -32,8 +32,8 @@ public class EventBus extends Thread {
 
 	public <T extends Event> void register(Class<T> eventType,
 			Listener<T> listener) {
-		enter();
 		synchronized (listeners) {
+			enter();
 			List<Listener<?>> list = listeners.get(eventType);
 			if (list == null) {
 				list = new ArrayList<Listener<?>>();
@@ -43,30 +43,30 @@ public class EventBus extends Thread {
 				throw new IllegalArgumentException("Listener " + listener
 						+ " already registered for event " + eventType);
 			list.add(listener);
+			leave();
 		}
-		leave();
 	}
 
 	public <T extends Event> void unregister(Class<T> eventType,
 			Listener<T> listener) {
-		enter();
 		synchronized (listeners) {
+			enter();
 			List<Listener<?>> list = listeners.get(eventType);
 			if (list == null) {
 				return;
 			}
 			list.remove(listener);
+			leave();
 		}
-		leave();
 	}
 
 	public void unregister(Listener<?> listener) {
-		enter();
 		synchronized (listeners) {
+			enter();
 			for (List<Listener<?>> list : listeners.values())
 				list.remove(listener);
+			leave();
 		}
-		leave();
 	}
 
 	public <T extends Event> void post(T event) {
